@@ -89,15 +89,11 @@ div.headline-img img{
 (function($){
 
 	$.ajax({
-		url: "http://api.espn.com/v1/sports/baseball/mlb/news/headlines?apikey=nh7hfbs5up83sffgt5bu2qzp",
-		//url: "http://api.espn.com/v1/sports/baseball/mlb/news?apikey=nh7hfbs5up83sffgt5bu2qzp",
+		url: "http://api.espn.com/v1/sports/baseball/mlb/news/headlines?apikey={your api key}",
 		dataType: "jsonp",
 		success: function(data) {
 
-			//console.log(data);
-
 			var html = '<ul class="baseball-headlines">';
-				count = 0;
 
 			for(var i=0; i<5; i++){
 				var obj = data.headlines[i],
@@ -135,11 +131,9 @@ div.headline-img img{
 			}
 			html += '</ul>';
 
-			// append this list to the document body
 			$('div.mlbheadlines').append(html);
 		},
 		error: function() {
-			 // handle the error
 			 var html = '<p>*Error Loading Headlines*</p>'
 			 $('div.mlbheadlines').append(html);
 		}
