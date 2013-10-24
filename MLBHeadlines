@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MLB Headlines - ESPN API</title>
+<link type="text/css" rel="stylesheet" href="">
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//timeago.yarp.com/jquery.timeago.js" type="text/javascript"></script>
+
+<style type="text/css">
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+}
+aside.widget{
+	background:#efefef;
+	padding:0 19px 19px 19px;
+	border: 1px solid #e3e3e3;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	display:block;
+	width:370px;
+}
+h2.widget-title{
+	font-family:helvetica;
+	font-weight:bold;
+	text-transform: uppercase;
+	font-size: 16px;
+	color: #082a62;
+	margin:10px 0;
+	text-align: center;
+}
+div.widget-body{
+	font-family: Helvetica;
+	background-color: #CCCCCC;
+	padding: 10px;
+	border-radius: 2px;
+}
+ul.baseball-headlines{
+	list-style: none;
+	margin:0;
+	padding:0;
+}
+ul.baseball-headlines > li{
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+div.headline-info{
+	float:left;
+}
+div.headline-info p{
+	font-size:10px;
+	color:#000000;
+	margin:5px 0 0 10px;
+}
+h4.headline{
+	font-size:12px;
+	margin:0 0 0 10px;
+}
+h4.headline > a{
+	text-decoration:none;
+	color:#082a62;
+}
+h4.headline > a:hover{
+	text-decoration: underline;
+}
+div.headline-img{
+	float:left;
+	max-width:70px;
+	max-height:50px;
+	overflow:hidden;
+}
+div.headline-img img{
+	
+}
+
+</style>
+
+</head>
+
+<script type="text/javascript">
+(function($){
+
+	$.ajax({
+		url: "http://api.espn.com/v1/sports/baseball/mlb/news/headlines?apikey=nh7hfbs5up83sffgt5bu2qzp",
+		//url: "http://api.espn.com/v1/sports/baseball/mlb/news?apikey=nh7hfbs5up83sffgt5bu2qzp",
+		dataType: "jsonp",
+		success: function(data) {
+
+			//console.log(data);
+
+			var html = '<ul class="baseball-headlines">';
+				count = 0;
+
+			for(var i=0; i<5; i++){
+				var obj = data.headlines[i],
+					headline = obj.headline,
+					link = obj.links.web.href,
+					imgObj = obj.images[0],
+					pubDate = obj.lastModified,
+					imgUrl = '',
+					displayImg = false;
+
+					if(imgObj != null && imgObj != 'undefined'){
+						imgUrl = imgObj.url;
+						displayImg = true;
+					}
+
+					pubDate = $.timeago(pubDate);
+
+					if(headline.length > 39){
+						headline = headline.substring(0,36);
+						headline += '...';
+					}
+
+				html += '<li>';
+				if(displayImg){
+					html += '<div class="headline-img">';
+					html += '<img src="'+imgUrl+'" width="70"/>';
+					html += '</div>';
+				}
+				html += '<div class="headline-info">';
+					html += '<h4 class="headline"><a target="_blank" href="'+link+'">'+headline+'</a></h4>';
+					html += '<p>Updated: '+pubDate+'</p>';
+				html += '</div>';
+				html += '<div style="clear:both;"></div>';
+				html += '</li>';
+			}
+			html += '</ul>';
+
+			// append this list to the document body
+			$('div.mlbheadlines').append(html);
+		},
+		error: function() {
+			 // handle the error
+			 var html = '<p>*Error Loading Headlines*</p>'
+			 $('div.mlbheadlines').append(html);
+		}
+	});
+
+}(jQuery));
+</script>
+
+<body>
+
+<aside class="widget">
+	<h2 class="widget-title">MLB Headlines</h2>
+	<div class="widget-body">
+		<div class="mlbheadlines">
+		</div>
+	</div>
+</aside>
+
+</body>
+
+</html>
